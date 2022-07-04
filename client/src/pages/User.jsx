@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRef } from "react";
 import { FaCopy, FaPaperPlane } from "react-icons/fa";
 import Spinner from "../components/Spinner";
-import { showMessage } from "../helpers/utils";
+import { copyToClipBoard, showMessage } from "../helpers/utils";
 
 export default function User() {
   const [state, setState] = useState({
@@ -13,6 +13,16 @@ export default function User() {
 
   const uploadFile = (e) => {
     e.preventDefault();
+
+    //check the file size
+    if (fileRef.current.files[0].size > 10 * 1024 * 1024) {
+      showMessage(
+        "error",
+        "File is too big to process. Miximum limit is 10 MB"
+      );
+      return false;
+    }
+
     setState({ ...state, loading: true });
     const formData = new FormData();
     formData.append("file", fileRef.current.files[0]);
@@ -61,6 +71,11 @@ export default function User() {
                   title="Copy file url"
                   className="btn btn-second btn-outline-secondary"
                   type="button"
+                  onClick={() =>
+                    copyToClipBoard(
+                      `${process.env.REACT_APP_BASE_URL}file/${state.newFileId}`
+                    )
+                  }
                 >
                   <FaCopy />
                 </button>

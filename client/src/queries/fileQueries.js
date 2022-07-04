@@ -1,5 +1,18 @@
 import { gql } from "@apollo/client";
 
+const GET_FILES = gql`
+  query getFile {
+    files {
+      id
+      name
+      status
+      type
+      size
+      createdAt
+    }
+  }
+`;
+
 const GET_FILE = gql`
   query getFile($id: ID!) {
     file(id: $id) {
@@ -13,4 +26,4 @@ const GET_FILE = gql`
   }
 `;
 
-export { GET_FILE };
+export { GET_FILE, GET_FILES };

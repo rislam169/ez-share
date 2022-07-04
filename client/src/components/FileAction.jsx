@@ -3,11 +3,11 @@ import { ADD_REQUEST } from "../mutations/requestMutations.js";
 import { useMutation } from "@apollo/client";
 import { showMessage } from "../helpers/utils.js";
 
-export default function FileAction({ fileId, status }) {
+export default function FileAction({ file }) {
   const [createRequest] = useMutation(ADD_REQUEST, {
     variables: {
-      fileId: fileId,
-      type: status === "Block" ? "unblock" : "block",
+      fileId: file.id,
+      type: file.status === "Blocked" ? "unblock" : "block",
     },
     onCompleted: () =>
       showMessage(
@@ -20,7 +20,7 @@ export default function FileAction({ fileId, status }) {
   const requestAction = () => {
     Swal.fire({
       title: `Please describe why this file should ${
-        status === "Block" ? "Unblock" : "Block"
+        file.status === "Blocked" ? "Unblock" : "Block"
       }`,
       input: "text",
       inputAttributes: {
@@ -53,41 +53,44 @@ export default function FileAction({ fileId, status }) {
   };
 
   const downloadFile = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}file/download/${fileId}`,
-      {
-        method: "post",
-      }
-    );
-    console.log(response);
-    let oldBlob = await response.blob();
-    let blob = new Blob([oldBlob], { type: "text/plain" });
-    let link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = "zip_test.txt";
-    link.click();
-    // console.log(response.arrayBuffer());
+    fetch(`${process.env.REACT_APP_API_URL}file/download/${file.id}`, {
+      method: "post",
+    })
+      .then((response) => {
+        response.blob().then((blob) => {
+          let newblob = new Blob([blob], { type: file.type });
+
+          let link = document.createElement("a");
+          link.href = URL.createObjectURL(newblob);
+          link.download = file.name;
+          link.click();
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        showMessage("error", error.message);
+      });
   };
 
   return (
     <div className="d-flex gap-1">
-      {status === "Unblocked" ? (
+      {file.status === "Unblocked" ? (
         <button className="btn btn-primary" onClick={() => downloadFile()}>
           Download
         </button>
       ) : (
-        <button className="btn btn-light" disabled={status === "Blockded"}>
+        <button className="btn btn-light" disabled={file.status === "Blockded"}>
           File is blocked
         </button>
       )}
 
       <button
         className={`btn ${
-          status === "Unblocked" ? "btn-outline-secondary" : "btn-primary"
+          file.status === "Unblocked" ? "btn-outline-secondary" : "btn-primary"
         }`}
         onClick={() => requestAction()}
       >
-        Request {status === "Unblocked" ? "Block" : "Unblock"}
+        Request {file.status === "Unblocked" ? "Block" : "Unblock"}
       </button>
     </div>
   );

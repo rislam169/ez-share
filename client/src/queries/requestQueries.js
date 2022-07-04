@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 const GET_REQUESTS = gql`
-  query getRequest($status: String!) {
+  query getRequest($status: String) {
     requests(status: $status) {
       id
       status

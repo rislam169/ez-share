@@ -1,6 +1,10 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import UserAccessProvider from "../contexts/UserAccessProvider";
 
 export default function Header() {
+  const { userType, setUserType } = useContext(UserAccessProvider);
+
   return (
     <nav className="navbar navbar-expand-lg mb-4 px-4 py-2">
       <div className="container-fluid">
@@ -20,15 +24,32 @@ export default function Header() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav ms-auto">
-            <Link className="nav-link active" aria-current="page" to="/">
+            <Link
+              className="nav-link active"
+              aria-current="page"
+              to="/"
+              onClick={() => setUserType(null)}
+            >
               Home
             </Link>
-            <Link className="nav-link active" aria-current="page" to="/admin">
-              Admin
-            </Link>
-            <Link className="nav-link active" aria-current="page" to="/user">
-              User
-            </Link>
+            {userType === "user" && (
+              <>
+                <Link
+                  className="nav-link active"
+                  aria-current="page"
+                  to="/requests"
+                >
+                  Requests
+                </Link>
+                <Link
+                  className="nav-link active"
+                  aria-current="page"
+                  to="/files"
+                >
+                  Files
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

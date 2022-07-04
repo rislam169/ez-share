@@ -4,8 +4,11 @@ import { useQuery } from "@apollo/client";
 import { GET_REQUEST } from "../queries/requestQueries";
 import RequestAction from "../components/RequestAction";
 import { FaArrowLeft } from "react-icons/fa";
+import { useContext } from "react";
+import UserAccessProvider from "../contexts/UserAccessProvider";
 
 export default function RequestDetail() {
+  const { userType } = useContext(UserAccessProvider);
   const { id } = useParams();
   const { loading, error, data, refetch } = useQuery(GET_REQUEST, {
     variables: { id },
@@ -72,13 +75,14 @@ export default function RequestDetail() {
                 </div>
               </div>
             </div>
-
-            <RequestAction
-              refetch={refetch}
-              requestId={data.request.id}
-              requestType={data.request.type}
-              fileId={data.request.file.id}
-            />
+            {userType === "admin" && (
+              <RequestAction
+                refetch={refetch}
+                requestId={data.request.id}
+                requestType={data.request.type}
+                fileId={data.request.file.id}
+              />
+            )}
           </div>
         </div>
       )}

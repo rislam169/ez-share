@@ -37,3 +37,31 @@ export function showMessage(type, message) {
       break;
   }
 }
+
+export function getStatusTheme(status) {
+  switch (status) {
+    case "Pending":
+      return "info";
+    case "Accepted":
+    case "Unblocked":
+      return "success";
+    case "Rejected":
+      return "danger";
+    case "Blocked":
+      return "warning";
+    default:
+      return "info";
+  }
+}
+
+export function formatFileSize(fileSize) {
+  return `${
+    fileSize > 1024 || fileSize == 1024
+      ? (fileSize / 1024).toFixed(2)
+      : parseFloat(fileSize).toFixed(2)
+  } ${fileSize > 1024 || fileSize == 1024 ? "MB" : "KB"}`;
+}
+
+export function copyToClipBoard(content) {
+  navigator.clipboard.writeText(content);
+}

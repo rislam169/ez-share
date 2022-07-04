@@ -1,7 +1,6 @@
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const cors = require("cors");
-const fs = require("fs");
 require("dotenv").config();
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
@@ -9,7 +8,6 @@ const {
   connectDB,
   getFile,
   updateFileStatus,
-  updateRequestStatus,
   addFile,
 } = require("./config/db");
 const {
@@ -131,20 +129,9 @@ app.post("/upload", async function (req, res) {
 app.post("/file/download/:fileId", function (req, res) {
   getFile(req.params.fileId).then((file) => {
     if (file) {
-      res.writeHead(200, {
-        "Content-Type": file.type,
-        "Content-Disposition": 'attachment; filename="' + file.name + '"',
-      });
-
-      res.end(new Buffer(file.content, "binary"));
-      // fs.readFile(file.content, (error, content) => {
-      //   if (error) {
-      //     returnResponse(false, error.message, res);
-      //   } else {
-      //     // res.write();
-      //     res.end(content);
-      //   }
-      // });
+      res.contentType(file.type);
+      res.send(file.content);
+      res.end();
     } else {
       returnResponse(false, "File Not Found!", res);
     }

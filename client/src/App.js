@@ -1,15 +1,17 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Header from "./components/Header";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import Home from "./pages/Home";
-import Admin from "./pages/Admin";
-import RequestDetail from "./pages/RequestDetail";
-import File from "./pages/File";
-import Project from "./pages/Project";
-import NotFound from "./pages/NotFound";
-import Legacy from "./pages/Legacy";
+import { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Header from "./components/Header";
+import UserAccessProvider from "./contexts/UserAccessProvider";
+import Admin from "./pages/Admin";
+import FileInfo from "./pages/FileInfo";
+import Files from "./pages/Files";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import RequestInfo from "./pages/RequestInfo";
+import Requests from "./pages/Requests";
 import User from "./pages/User";
 
 const cache = new InMemoryCache({
@@ -26,6 +28,16 @@ const cache = new InMemoryCache({
             return incoming;
           },
         },
+        requests: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
+        files: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
       },
     },
   },
@@ -37,25 +49,28 @@ const client = new ApolloClient({
 });
 
 function App() {
+  const [userType, setUserType] = useState(null);
   return (
     <>
       <ApolloProvider client={client}>
-        <Router>
-          <Header />
-          <ToastContainer />
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/legacy" element={<Legacy />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/user" element={<User />} />
-              <Route path="requests/:id" element={<RequestDetail />} />
-              <Route path="file/:id" element={<File />} />
-              <Route path="projects/:id" element={<Project />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </Router>
+        <UserAccessProvider.Provider value={{ userType, setUserType }}>
+          <Router>
+            <Header />
+            <ToastContainer />
+            <div className="container">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/user" element={<User />} />
+                <Route path="requests" element={<Requests />} />
+                <Route path="requests/:id" element={<RequestInfo />} />
+                <Route path="files" element={<Files />} />
+                <Route path="file/:id" element={<FileInfo />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </Router>
+        </UserAccessProvider.Provider>
       </ApolloProvider>
     </>
   );

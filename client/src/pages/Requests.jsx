@@ -1,14 +1,14 @@
 import Request from "../components/Request";
 
-function Admin() {
+function Requests() {
   return (
     <div className="card">
-      <h5 className="card-header">Pending Request</h5>
+      <h5 className="card-header">All Request</h5>
       <div className="card-body">
-        <Request status="Pending" />
+        <Request />
       </div>
     </div>
   );
 }
 
-export default Admin;
+export default Requests;

@@ -1,17 +1,28 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_REQUESTS } from "../queries/requestQueries";
 import Spinner from "./Spinner";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
+import { getStatusTheme } from "../helpers/utils";
+import { useEffect } from "react";
 
-function Request() {
-  const { loading, error, data } = useQuery(GET_REQUESTS, {
-    variables: { status: "Pending" },
-  });
+function Request({ status }) {
+  const [getRequests, { called, loading, data, error }] = useLazyQuery(
+    GET_REQUESTS,
+    {
+      variables: { status: status },
+      fetchPolicy: "network-only",
+      nextFetchPolicy: "cache-first",
+    }
+  );
 
-  if (loading) return <Spinner />;
+  useEffect(() => {
+    getRequests();
+  }, []);
+
+  if (called && loading) return <Spinner />;
   if (error) return <p>Something went wrong...</p>;
-  if (!data.requests[0]) return <p>No Pending Request Found</p>;
+  if (!data?.requests[0]) return <p>No Pending Request Found</p>;
 
   return (
     <>
@@ -39,7 +50,11 @@ function Request() {
                   </Link>
                 </td>
                 <td>
-                  <p className="badge rounded-pill text-bg-info text-white">
+                  <p
+                    className={`badge rounded-pill text-bg-${getStatusTheme(
+                      request.status
+                    )} text-white`}
+                  >
                     {request.status}
                   </p>
                 </td>

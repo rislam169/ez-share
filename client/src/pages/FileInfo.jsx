@@ -5,8 +5,9 @@ import { GET_FILE } from "../queries/fileQueries";
 import FileAction from "../components/FileAction";
 import CloudIcon from "../components/assets/cloud.png";
 import FileIcon from "../components/assets/file.png";
+import { formatFileSize } from "../helpers/utils";
 
-export default function File() {
+export default function FileInfo() {
   const { id } = useParams();
   console.log(id);
   const { loading, error, data, refetch } = useQuery(GET_FILE, {
@@ -36,15 +37,12 @@ export default function File() {
                     <div>
                       <p className="m-0">{data.file.name}</p>
                       <small className="text-muted">
-                        {data.file.size > 1024
-                          ? (data.file.size / 1024).toFixed(2)
-                          : data.file.size}{" "}
-                        {data.file.size > 1024 ? "MB" : "KB"}
+                        {formatFileSize(data.file.size)}
                       </small>
                     </div>
                   </div>
 
-                  <FileAction fileId={data.file.id} status={data.file.status} />
+                  <FileAction file={data.file} />
                 </div>
               </div>
             </div>

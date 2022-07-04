@@ -193,7 +193,7 @@ const prepareFileData = (file) => {
 
   return {
     name: file.name,
-    content: binary(file.data),
+    content: new Buffer.from(file.data, "base64"),
     hash: fileHash,
     size: file.size / 1000,
     type: file.mimetype,
