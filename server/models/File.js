@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const FileSchema = new mongoose.Schema(
   {
+    expire_at: { type: Date, default: Date.now, expires: 20 },
     name: {
       type: String,
     },

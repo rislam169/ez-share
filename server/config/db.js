@@ -9,7 +9,11 @@ const connectDB = async () => {
 };
 
 const getFile = async (fileId) => {
-  const file = await File.findById(fileId).then((data) => {
+  const file = await File.findByIdAndUpdate(fileId, {
+    $set: {
+      expire_at: new Date(Date.now() + 12096e5), // File will be deleted after 14 days if not downloaded
+    },
+  }).then((data) => {
     return data;
   });
   return file;

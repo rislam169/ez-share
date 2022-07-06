@@ -24,7 +24,7 @@ const app = express();
 connectDB();
 
 app.use(cors());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   fileUpload({
@@ -138,4 +138,11 @@ app.post("/file/download/:fileId", function (req, res) {
   });
 });
 
+console.log("asdf");
 app.listen(port, console.log(`Server is running on ${port}`));
+
+app.use(function errorHandler(err, req, res, next) {
+  console.log(err);
+  res.status(500);
+  res.render("error", { error: err });
+});
