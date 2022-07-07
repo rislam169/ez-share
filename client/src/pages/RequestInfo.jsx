@@ -15,8 +15,9 @@ export default function RequestDetail() {
   });
 
   if (loading) return <Spinner />;
-  if (error || !data.request.file)
-    return <p>Something Went Wrong. Please try again later</p>;
+  if (error) return <p>Something Went Wrong. Please try again later</p>;
+  if (!data.request.file)
+    return <p>The file related to this request not found in the system</p>;
 
   return (
     <>

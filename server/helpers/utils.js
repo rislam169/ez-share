@@ -5,13 +5,15 @@ const crypto = require("crypto");
 const mongodb = require("mongodb");
 const blockListUrl = "https://www.tu-chemnitz.de/informatik/DVS/blocklist/";
 
-const returnResponse = (status, message, res, data = {}) => {
-  res.write(JSON.stringify({ status: status, message, data }));
+const returnResponse = (statusCode, status, message, res, data = {}) => {
+  res
+    .status(statusCode)
+    .send(JSON.stringify({ status: status, message, data }));
   res.end();
 };
 
 const responseSuccess = (message, res) => {
-  res.write(JSON.stringify({ status: true, message }));
+  res.status(201).write(JSON.stringify({ status: true, message }));
   res.end();
 };
 

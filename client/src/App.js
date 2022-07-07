@@ -61,7 +61,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/user" element={<User />} />
+                <Route path="/upload" element={<User />} />
                 <Route path="requests" element={<Requests />} />
                 <Route path="requests/:id" element={<RequestInfo />} />
                 <Route path="files" element={<Files />} />

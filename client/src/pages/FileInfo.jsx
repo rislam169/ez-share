@@ -15,8 +15,8 @@ export default function FileInfo() {
   });
 
   if (loading) return <Spinner />;
-  if (error || !data.file)
-    return <p>Something Went Wrong. Please try again later</p>;
+  if (error) return <p>Something Went Wrong. Please try again later</p>;
+  if (!data.file) return <p>File not found in the system.</p>;
 
   return (
     <>
@@ -29,8 +29,8 @@ export default function FileInfo() {
                 <div className="d-flex flex-column justify-content-between">
                   <div className="d-flex gap-1">
                     <img
-                      height={50}
-                      width={50}
+                      height={60}
+                      width={60}
                       src={FileIcon}
                       alt="File Icon"
                     />
@@ -38,6 +38,10 @@ export default function FileInfo() {
                       <p className="m-0">{data.file.name}</p>
                       <small className="text-muted">
                         {formatFileSize(data.file.size)}
+                      </small>
+                      <br />
+                      <small className="text-muted">
+                        {new Date(data.file.createdAt).toLocaleString()}
                       </small>
                     </div>
                   </div>

@@ -16,7 +16,7 @@ function Home() {
           Admin
         </Link>
         <Link
-          to="/user"
+          to="/upload"
           className="btn btn-primary"
           onClick={() => setUserType("user")}
         >

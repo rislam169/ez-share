@@ -44,6 +44,7 @@ app.use(
 app.post("/block", function (req, res) {
   if (!req.body.fileId || !req.body.requestId) {
     returnResponse(
+      400,
       false,
       "File id or request id not found in the request",
       res
@@ -56,9 +57,15 @@ app.post("/block", function (req, res) {
         if (isBlocked) {
           updateFileStatus(file.id, "Blocked").then((file) => {
             if (file) {
-              returnResponse(true, "File is now blocked successfully!", res);
+              returnResponse(
+                210,
+                true,
+                "File is now blocked successfully!",
+                res
+              );
             } else {
               returnResponse(
+                500,
                 false,
                 "File is not blocked! Please try again",
                 res
@@ -68,7 +75,7 @@ app.post("/block", function (req, res) {
         }
       });
     } else {
-      returnResponse(false, "File Not Found!", res);
+      returnResponse(404, false, "File Not Found!", res);
     }
   });
 });
@@ -77,6 +84,7 @@ app.post("/block", function (req, res) {
 app.post("/unblock", function (req, res) {
   if (!req.body.fileId || !req.body.requestId) {
     returnResponse(
+      400,
       false,
       "File id or request id not found in the request",
       res
@@ -89,9 +97,15 @@ app.post("/unblock", function (req, res) {
         if (isUnblocked) {
           updateFileStatus(file.id, "Unblocked").then((file) => {
             if (file) {
-              returnResponse(true, "File is now unblocked successfully!", res);
+              returnResponse(
+                204,
+                true,
+                "File is now unblocked successfully!",
+                res
+              );
             } else {
               returnResponse(
+                500,
                 false,
                 "File is not unblocked! Please try again",
                 res
@@ -101,7 +115,7 @@ app.post("/unblock", function (req, res) {
         }
       });
     } else {
-      returnResponse(false, "File Not Found!", res);
+      returnResponse(404, false, "File Not Found!", res);
     }
   });
 });
@@ -109,17 +123,17 @@ app.post("/unblock", function (req, res) {
 // Upload a file
 app.post("/upload", async function (req, res) {
   if (!req.files) {
-    returnResponse(false, "Files not found in the request", res);
+    returnResponse(400, false, "Files not found in the request", res);
   } else {
     const fileData = prepareFileData(req.files.file);
 
     addFile(fileData).then((file) => {
       if (file) {
-        returnResponse(true, "File uploaded successfully!", res, {
+        returnResponse(201, true, "File uploaded successfully!", res, {
           fileId: file.id,
         });
       } else {
-        returnResponse(false, "File is not blocked! Please try again", res);
+        returnResponse(500, false, "File is not uploaded! Please try again");
       }
     });
   }
@@ -130,19 +144,13 @@ app.post("/file/download/:fileId", function (req, res) {
   getFile(req.params.fileId).then((file) => {
     if (file) {
       res.contentType(file.type);
+      res.status(200);
       res.send(file.content);
       res.end();
     } else {
-      returnResponse(false, "File Not Found!", res);
+      returnResponse(404, false, "File Not Found!", res);
     }
   });
 });
 
-console.log("asdf");
 app.listen(port, console.log(`Server is running on ${port}`));
-
-app.use(function errorHandler(err, req, res, next) {
-  console.log(err);
-  res.status(500);
-  res.render("error", { error: err });
-});

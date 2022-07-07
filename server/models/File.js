@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const FileSchema = new mongoose.Schema(
   {
-    expire_at: { type: Date, default: Date.now, expires: 20 },
+    expire_at: { type: Date, default: new Date(Date.now() + 12096e5) }, // Delete the file after 14 days
     name: {
       type: String,
     },

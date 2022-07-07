@@ -58,13 +58,14 @@ const RequestType = new GraphQLObjectType({
 });
 
 const RootQuery = new GraphQLObjectType({
-  name: "RootQueryTpe",
+  name: "RootQueryType",
   fields: {
     requests: {
       type: new GraphQLList(RequestType),
+      description:
+        "Returns list of request which have matche with the argument",
       args: { status: { type: GraphQLString } },
       resolve(parent, args) {
-        console.log(args.status);
         return args.status
           ? Request.find({ status: { $in: args.status } })
           : Request.find();
@@ -72,6 +73,8 @@ const RootQuery = new GraphQLObjectType({
     },
     request: {
       type: RequestType,
+      description:
+        "Returns information about a request which have matche the id",
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         return Request.findById(args.id);
@@ -79,12 +82,14 @@ const RootQuery = new GraphQLObjectType({
     },
     files: {
       type: new GraphQLList(FileType),
+      description: "Returns list of all the files",
       resolve(parent, args) {
         return File.find();
       },
     },
     file: {
       type: FileType,
+      description: "Returns information about a file which have matche the id",
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         return File.findById(args.id);
@@ -100,6 +105,7 @@ const mutation = new GraphQLObjectType({
     //Add a file
     addFile: {
       type: FileType,
+      description: "Add a file details after uploaded by user",
       args: {
         name: { type: GraphQLNonNull(GraphQLString) },
         size: { type: GraphQLNonNull(GraphQLString) },
@@ -133,6 +139,7 @@ const mutation = new GraphQLObjectType({
     //Add a request
     addRequest: {
       type: RequestType,
+      description: "Add a request for block or unblock a file",
       args: {
         description: { type: GraphQLNonNull(GraphQLString) },
         status: {
@@ -173,6 +180,7 @@ const mutation = new GraphQLObjectType({
     //Reject a request
     rejectRequest: {
       type: RequestType,
+      description: "Reject the request by admin",
       args: {
         id: { type: GraphQLNonNull(GraphQLID) },
       },
@@ -185,9 +193,10 @@ const mutation = new GraphQLObjectType({
       },
     },
 
-    //Reject a request
+    //Accept a request
     acceptRequest: {
       type: RequestType,
+      description: "Accept a request by admin",
       args: {
         id: { type: GraphQLNonNull(GraphQLID) },
       },
